@@ -14,16 +14,31 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
+import java.util.UUID;
 
 public class CrimeFragment extends Fragment {
     private Crime mCrime;
     private EditText mTitleField;
     private Button mDateButton;
     private CheckBox mSolvedCheckbox;
+    public static final String ARG_CRIME_ID = "crime_id";
+    public static final String DIALOGUE_DATE = "DialogDate";
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCrime = new Crime();
+        UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
+        mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
+    }
+
+    public static CrimeFragment newInstance(UUID crimeId){
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_CRIME_ID, crimeId);
+        CrimeFragment crimeFragment = new CrimeFragment();
+        crimeFragment.setArguments(args);
+        return crimeFragment;
     }
 
     @Nullable
@@ -49,7 +64,13 @@ public class CrimeFragment extends Fragment {
         });
         mDateButton = (Button) view.findViewById(R.id.btn_crime_date);
         mDateButton.setText(mCrime.getDate().toString());
-        mDateButton.setEnabled(false);
+//        mDateButton.setEnabled(false);
+        mDateButton.setOnClickListener(v -> {
+            FragmentManager fragmentManager = getFragmentManager();
+//            DatePickerFragment datePickerFragment = new DatePickerFragment();
+            DatePickerFragment datePickerFragment = DatePickerFragment.newInstance(mCrime.getDate());
+            datePickerFragment.show(fragmentManager, DIALOGUE_DATE);
+        });
 
         mSolvedCheckbox = (CheckBox) view.findViewById(R.id.crime_solved);
         mSolvedCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

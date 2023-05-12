@@ -8,7 +8,13 @@ import java.util.UUID;
 
 public class CrimeLab {
     private static CrimeLab sCrimeLab;
+
    private List<Crime> crimeList;
+
+   public void addCrime(Crime crime){
+       crimeList.add(crime);
+   }
+
     public static CrimeLab get(Context context){
         if(sCrimeLab == null){
             sCrimeLab = new CrimeLab(context);
@@ -18,12 +24,7 @@ public class CrimeLab {
 
     private CrimeLab(Context context){
         crimeList = new ArrayList<Crime>();
-        for (int i = 0; i <= 100 ; i++) {
-            Crime crime = new Crime();
-            crime.setTitle("Crime number # " + i);
-            crime.setSolved(i%2 == 0);
-            crimeList.add(crime);
-        }
+
     }
 
     public List<Crime> getCrimeList(){
